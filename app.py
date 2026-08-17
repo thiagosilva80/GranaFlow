@@ -916,6 +916,117 @@ def relatorios():
         maior_categoria=maior_categoria,
         movimentacoes=movimentacoes
     )
+    
+@app.route("/configuracoes", methods=["GET", "POST"])
+def configuracoes():
+
+    if "usuario_id" not in session:
+        return redirect(url_for("login"))
+
+    usuario_id = session["usuario_id"]
+
+    conexao = criar_conexao()
+    cursor = conexao.cursor()
+
+    usuario = cursor.execute(
+        """
+        SELECT *
+        FROM usuarios
+        WHERE id = ?
+        """,
+        (usuario_id,)
+    ).fetchone()
+
+    if request.method == "POST":
+
+        acao = request.form.get("acao")
+
+        # EDITAR PERFIL
+        if acao == "perfil":
+
+            nome = request.form["nome"]
+            email = request.form["email"]
+
+            email_existente = cursor.execute(
+                """
+                SELECT *
+                FROM usuarios
+                WHERE email = ?
+                AND id != ?
+                """,
+                (email, usuario_id)
+            ).fetchone()
+
+            if email_existente:
+
+                flash("Este e-mail já está sendo utilizado.")
+
+            else:
+
+                cursor.execute(
+                    """
+                    UPDATE usuarios
+                    SET nome = ?, email = ?
+                    WHERE id = ?
+                    """,
+                    (
+                        nome,
+                        email,
+                        usuario_id
+                    )
+                )
+
+                conexao.commit()
+
+                session["usuario_nome"] = nome
+
+                flash("Perfil atualizado com sucesso.")
+
+        # ALTERAR SENHA
+        elif acao == "senha":
+
+            senha_atual = request.form["senha_atual"]
+            nova_senha = request.form["nova_senha"]
+
+            if bcrypt.check_password_hash(
+                usuario["senha"],
+                senha_atual
+            ):
+
+                nova_senha_hash = bcrypt.generate_password_hash(
+                    nova_senha
+                ).decode("utf-8")
+
+                cursor.execute(
+                    """
+                    UPDATE usuarios
+                    SET senha = ?
+                    WHERE id = ?
+                    """,
+                    (
+                        nova_senha_hash,
+                        usuario_id
+                    )
+                )
+
+                conexao.commit()
+
+                flash("Senha alterada com sucesso.")
+
+            else:
+
+                flash("Senha atual incorreta.")
+
+        conexao.close()
+
+        return redirect(url_for("configuracoes"))
+
+    conexao.close()
+
+    return render_template(
+        "configuracoes.html",
+        usuario=usuario
+    )
 # =========================
 # INICIAR SISTEMA
 # =========================

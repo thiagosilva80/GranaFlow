@@ -574,3 +574,20 @@ body {
     }
 
 }
+
+.config-section {
+    margin-bottom: 25px;
+}
+
+.config-message {
+    margin-bottom: 20px;
+
+    padding: 14px 18px;
+
+    background: white;
+
+    border-left: 4px solid #111827;
+    border-radius: 8px;
+
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
