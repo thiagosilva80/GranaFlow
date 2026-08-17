@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>GranaFlow | Metas</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/dashboard.css') }}"
+    >
+</head>
+
+<body>
+
+<div class="app">
+
+    <aside class="sidebar">
+
+        <div>
+
+            <div class="logo">
+                <h2>GranaFlow</h2>
+                <span>Controle financeiro</span>
+            </div>
+
+            <nav>
+
+                <a href="{{ url_for('dashboard') }}">
+                    Dashboard
+                </a>
+
+                <a href="{{ url_for('receitas') }}">
+                    Receitas
+                </a>
+
+                <a href="{{ url_for('despesas') }}">
+                    Despesas
+                </a>
+
+                <a href="{{ url_for('contas') }}">
+                    Contas
+                </a>
+
+                <a href="{{ url_for('metas') }}" class="active">
+                    Metas
+                </a>
+
+                <a href="#">
+                    Relatórios
+                </a>
+
+            </nav>
+
+        </div>
+
+    </aside>
+
+
+    <main class="main-content">
+
+        <header class="topbar">
+
+            <div>
+                <p class="welcome">Planejamento financeiro</p>
+                <h1>Metas</h1>
+            </div>
+
+        </header>
+
+
+        <section class="panel">
+
+            <div class="panel-header">
+
+                <div>
+                    <h3>Criar nova meta</h3>
+                    <p>Defina um objetivo financeiro.</p>
+                </div>
+
+            </div>
+
+
+            <form method="POST" class="finance-form">
+
+                <div>
+
+                    <label for="nome">
+                        Nome da meta
+                    </label>
+
+                    <input
+                        type="text"
+                        id="nome"
+                        name="nome"
+                        placeholder="Ex: Comprar notebook"
+                        required
+                    >
+
+                </div>
+
+
+                <div>
+
+                    <label for="valor_meta">
+                        Valor desejado
+                    </label>
+
+                    <input
+                        type="number"
+                        id="valor_meta"
+                        name="valor_meta"
+                        step="0.01"
+                        min="0.01"
+                        placeholder="0,00"
+                        required
+                    >
+
+                </div>
+
+
+                <div>
+
+                    <label for="valor_atual">
+                        Valor já guardado
+                    </label>
+
+                    <input
+                        type="number"
+                        id="valor_atual"
+                        name="valor_atual"
+                        step="0.01"
+                        min="0"
+                        value="0"
+                    >
+
+                </div>
+
+
+                <div>
+
+                    <label for="data_limite">
+                        Data limite
+                    </label>
+
+                    <input
+                        type="date"
+                        id="data_limite"
+                        name="data_limite"
+                    >
+
+                </div>
+
+
+                <button type="submit">
+                    + Criar meta
+                </button>
+
+            </form>
+
+        </section>
+
+
+        <section class="panel">
+
+            <div class="panel-header">
+
+                <div>
+                    <h3>Minhas metas</h3>
+                    <p>Acompanhe seus objetivos.</p>
+                </div>
+
+            </div>
+
+
+            {% if metas %}
+
+                <div class="metas-list">
+
+                    {% for meta in metas %}
+
+                        <div class="meta-card">
+
+                            <div class="meta-top">
+
+                                <div>
+
+                                    <h3>
+                                        {{ meta["nome"] }}
+                                    </h3>
+
+                                    {% if meta["data_limite"] %}
+
+                                        <span>
+                                            Até {{ meta["data_limite"] }}
+                                        </span>
+
+                                    {% endif %}
+
+                                </div>
+
+
+                                <strong>
+                                    {{ "%.0f"|format(meta["porcentagem"]) }}%
+                                </strong>
+
+                            </div>
+
+
+                            <p>
+                                R$ {{ "%.2f"|format(meta["valor_atual"]) }}
+                                de
+                                R$ {{ "%.2f"|format(meta["valor_meta"]) }}
+                            </p>
+
+
+                            <div class="goal-progress">
+
+                                <div
+                                    style="width: {{ meta['porcentagem'] }}%;"
+                                ></div>
+
+                            </div>
+
+
+                            <form
+                                method="POST"
+                                action="{{ url_for('adicionar_valor_meta', meta_id=meta['id']) }}"
+                                class="meta-add-form"
+                            >
+
+                                <input
+                                    type="number"
+                                    name="valor"
+                                    step="0.01"
+                                    min="0.01"
+                                    placeholder="Adicionar valor"
+                                    required
+                                >
+
+                                <button type="submit">
+                                    Adicionar
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <div class="empty-state">
+
+                    <h4>Nenhuma meta criada</h4>
+
+                    <p>
+                        Crie sua primeira meta financeira.
+                    </p>
+
+                </div>
+
+            {% endif %}
+
+        </section>
+
+    </main>
+
+</div>
+
+</body>
+
+</html>

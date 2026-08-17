@@ -45,6 +45,34 @@ CREATE TABLE IF NOT EXISTS despesas (
 )
 """)
 
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS contas (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    usuario_id INTEGER NOT NULL,
+    descricao TEXT NOT NULL,
+    valor REAL NOT NULL,
+    categoria TEXT NOT NULL,
+    vencimento DATE NOT NULL,
+    status TEXT DEFAULT 'pendente',
+    data_cadastro DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
+)
+""")
+
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS metas (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    usuario_id INTEGER NOT NULL,
+    nome TEXT NOT NULL,
+    valor_meta REAL NOT NULL,
+    valor_atual REAL DEFAULT 0,
+    data_limite DATE,
+    data_cadastro DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
+)
+""")
 conexao.commit()
 conexao.close()
 

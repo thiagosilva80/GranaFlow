@@ -418,3 +418,159 @@ body {
     color: #9ca3af;
     font-size: 12px;
 }
+
+.metas-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.meta-card {
+    padding: 20px;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+}
+
+.meta-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.meta-top span {
+    color: #9ca3af;
+    font-size: 13px;
+}
+
+.meta-card p {
+    color: #6b7280;
+    margin-bottom: 12px;
+}
+
+.meta-add-form {
+    margin-top: 15px;
+
+    display: flex;
+    gap: 10px;
+}
+
+.meta-add-form input {
+    flex: 1;
+
+    padding: 10px;
+
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+}
+
+.meta-add-form button {
+    border: none;
+
+    background: #111827;
+    color: white;
+
+    padding: 10px 16px;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+}
+
+@media (max-width: 700px) {
+
+    .metas-list {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+.btn-meta {
+    display: inline-block;
+
+    margin-top: 15px;
+
+    padding: 9px 14px;
+
+    background: #111827;
+    color: white;
+
+    text-decoration: none;
+
+    border-radius: 8px;
+
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.btn-meta:hover {
+    opacity: 0.9;
+}
+
+.report-filter {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.report-filter input {
+    padding: 11px 14px;
+
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+
+    background: white;
+}
+
+.report-filter button {
+    padding: 11px 18px;
+
+    border: none;
+    border-radius: 8px;
+
+    background: #111827;
+    color: white;
+
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.report-filter button:hover {
+    opacity: 0.9;
+}
+
+.report-cards {
+    margin-top: 25px;
+}
+
+.report-highlight {
+    min-height: 180px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    gap: 10px;
+}
+
+.report-highlight span {
+    color: #9ca3af;
+    font-size: 13px;
+}
+
+.report-highlight h3 {
+    font-size: 24px;
+}
+
+.report-highlight strong {
+    font-size: 22px;
+}
+
+@media (max-width: 700px) {
+
+    .report-filter {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+}

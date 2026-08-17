@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>GranaFlow | Relatórios</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/dashboard.css') }}"
+    >
+</head>
+
+<body>
+
+<div class="app">
+
+    <aside class="sidebar">
+
+        <div>
+
+            <div class="logo">
+                <h2>GranaFlow</h2>
+                <span>Controle financeiro</span>
+            </div>
+
+            <nav>
+
+                <a href="{{ url_for('dashboard') }}">
+                    Dashboard
+                </a>
+
+                <a href="{{ url_for('receitas') }}">
+                    Receitas
+                </a>
+
+                <a href="{{ url_for('despesas') }}">
+                    Despesas
+                </a>
+
+                <a href="{{ url_for('contas') }}">
+                    Contas
+                </a>
+
+                <a href="{{ url_for('metas') }}">
+                    Metas
+                </a>
+
+                <a
+                    href="{{ url_for('relatorios') }}"
+                    class="active"
+                >
+                    Relatórios
+                </a>
+
+            </nav>
+
+        </div>
+
+    </aside>
+
+
+    <main class="main-content">
+
+        <header class="topbar">
+
+            <div>
+
+                <p class="welcome">
+                    Análise financeira
+                </p>
+
+                <h1>
+                    Relatórios
+                </h1>
+
+            </div>
+
+        </header>
+
+
+        <!-- FILTRO -->
+
+        <section class="panel">
+
+            <div class="panel-header">
+
+                <div>
+                    <h3>Período do relatório</h3>
+
+                    <p>
+                        Escolha o mês que deseja analisar.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <form
+                method="GET"
+                class="report-filter"
+            >
+
+                <input
+                    type="month"
+                    name="mes"
+                    value="{{ mes }}"
+                    required
+                >
+
+                <button type="submit">
+                    Gerar relatório
+                </button>
+
+            </form>
+
+        </section>
+
+
+        <!-- RESUMO -->
+
+        <section class="cards report-cards">
+
+            <div class="card">
+
+                <span>
+                    Receitas
+                </span>
+
+                <h2 class="positivo">
+                    R$ {{ "%.2f"|format(total_receitas) }}
+                </h2>
+
+                <p>
+                    Entradas no período
+                </p>
+
+            </div>
+
+
+            <div class="card">
+
+                <span>
+                    Despesas
+                </span>
+
+                <h2 class="negativo">
+                    R$ {{ "%.2f"|format(total_despesas) }}
+                </h2>
+
+                <p>
+                    Saídas no período
+                </p>
+
+            </div>
+
+
+            <div class="card saldo">
+
+                <span>
+                    Saldo
+                </span>
+
+                <h2>
+                    R$ {{ "%.2f"|format(saldo) }}
+                </h2>
+
+                <p>
+                    Resultado do período
+                </p>
+
+            </div>
+
+
+            <div class="card">
+
+                <span>
+                    Movimentações
+                </span>
+
+                <h2>
+                    {{ quantidade_movimentacoes }}
+                </h2>
+
+                <p>
+                    Registros no período
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- ANÁLISE -->
+
+        <section class="dashboard-grid">
+
+            <!-- GASTOS POR CATEGORIA -->
+
+            <div class="panel">
+
+                <div class="panel-header">
+
+                    <div>
+
+                        <h3>
+                            Gastos por categoria
+                        </h3>
+
+                        <p>
+                            Distribuição das despesas
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                {% if categorias %}
+
+                    <div class="category-list">
+
+                        {% for categoria in categorias %}
+
+                            <div class="category">
+
+                                <div>
+
+                                    <strong>
+                                        {{ categoria["categoria"] }}
+                                    </strong>
+
+                                    <span>
+                                        R$ {{ "%.2f"|format(categoria["total"]) }}
+                                    </span>
+
+                                </div>
+
+                                {% if total_despesas > 0 %}
+
+                                    {% set porcentagem =
+                                        (categoria["total"] / total_despesas) * 100
+                                    %}
+
+                                {% else %}
+
+                                    {% set porcentagem = 0 %}
+
+                                {% endif %}
+
+                                <div class="progress">
+
+                                    <div
+                                        style="width: {{ porcentagem }}%;"
+                                    ></div>
+
+                                </div>
+
+                                <small>
+                                    {{ "%.0f"|format(porcentagem) }}%
+                                    das despesas
+                                </small>
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                {% else %}
+
+                    <div class="empty-state">
+
+                        <h4>
+                            Nenhuma despesa neste período
+                        </h4>
+
+                        <p>
+                            Cadastre despesas para visualizar
+                            a análise por categoria.
+                        </p>
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- DESTAQUE -->
+
+            <div class="panel">
+
+                <div class="panel-header">
+
+                    <div>
+
+                        <h3>
+                            Destaque do período
+                        </h3>
+
+                        <p>
+                            Resumo dos seus gastos
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                {% if maior_categoria %}
+
+                    <div class="report-highlight">
+
+                        <span>
+                            Categoria com maior gasto
+                        </span>
+
+                        <h3>
+                            {{ maior_categoria["categoria"] }}
+                        </h3>
+
+                        <strong class="negativo">
+                            R$ {{ "%.2f"|format(maior_categoria["total"]) }}
+                        </strong>
+
+                    </div>
+
+                {% else %}
+
+                    <div class="empty-state">
+
+                        <h4>
+                            Sem gastos registrados
+                        </h4>
+
+                        <p>
+                            Ainda não há dados suficientes
+                            para gerar um destaque.
+                        </p>
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+        </section>
+
+
+        <!-- MOVIMENTAÇÕES -->
+
+        <section class="panel transactions">
+
+            <div class="panel-header">
+
+                <div>
+
+                    <h3>
+                        Movimentações do período
+                    </h3>
+
+                    <p>
+                        Receitas e despesas do mês selecionado.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            {% if movimentacoes %}
+
+                {% for movimento in movimentacoes %}
+
+                    <div class="transaction">
+
+                        <div>
+
+                            <strong>
+                                {{ movimento["descricao"] }}
+                            </strong>
+
+                            <span>
+
+                                {{ movimento["categoria"] }}
+                                •
+                                {{ movimento["data"] }}
+
+                            </span>
+
+                        </div>
+
+
+                        {% if movimento["tipo"] == "receita" %}
+
+                            <strong class="positivo">
+                                + R$ {{ "%.2f"|format(movimento["valor"]) }}
+                            </strong>
+
+                        {% else %}
+
+                            <strong class="negativo">
+                                - R$ {{ "%.2f"|format(movimento["valor"]) }}
+                            </strong>
+
+                        {% endif %}
+
+                    </div>
+
+                {% endfor %}
+
+            {% else %}
+
+                <div class="empty-state">
+
+                    <h4>
+                        Nenhuma movimentação encontrada
+                    </h4>
+
+                    <p>
+                        Não existem receitas ou despesas
+                        cadastradas neste período.
+                    </p>
+
+                </div>
+
+            {% endif %}
+
+        </section>
+
+    </main>
+
+</div>
+
+</body>
+
+</html>

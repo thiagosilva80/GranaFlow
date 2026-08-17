@@ -42,15 +42,15 @@
                 Despesas
             </a>
 
-            <a href="#">
+            <a href="{{ url_for('contas') }}">
                 Contas
             </a>
 
-            <a href="#">
+            <a href="{{ url_for('metas') }}">
                 Metas
             </a>
 
-            <a href="#">
+            <a href="{{ url_for('relatorios') }}">
                 Relatórios
             </a>
 
@@ -62,7 +62,7 @@
                 Configurações
             </a>
 
-            <a href="#">
+            <a href="{{ url_for('logout') }}">
                 Sair
             </a>
 
@@ -162,7 +162,7 @@
                 </span>
 
                 <h2>
-                    R$ 0,00
+                    R$ {{ "%.2f"|format(total_contas) }}
                 </h2>
 
                 <p>
@@ -266,39 +266,80 @@
 
             <div class="panel">
 
-                <div class="panel-header">
+    <div class="panel-header">
 
-                    <div>
+        <div>
+            <h3>Metas financeiras</h3>
+            <p>Seu objetivo atual</p>
+        </div>
 
-                        <h3>
-                            Metas financeiras
-                        </h3>
+    </div>
 
-                        <p>
-                            Seus objetivos
-                        </p>
+    {% if meta_dashboard %}
 
-                    </div>
+        <div class="goal">
 
-                </div>
+            <h4>
+                {{ meta_dashboard["nome"] }}
+            </h4>
 
+            <p>
+                R$ {{ "%.2f"|format(meta_dashboard["valor_atual"]) }}
+                de
+                R$ {{ "%.2f"|format(meta_dashboard["valor_meta"]) }}
+            </p>
 
-                <div class="empty-state">
+            <div class="goal-progress">
 
-                    <h4>
-                        Nenhuma meta criada
-                    </h4>
-
-                    <p>
-                        Crie sua primeira meta financeira
-                        para acompanhar seu progresso.
-                    </p>
-
-                </div>
+                <div
+                    style="width: {{ meta_dashboard['porcentagem'] }}%;"
+                ></div>
 
             </div>
 
-        </section>
+            <strong>
+                {{ "%.0f"|format(meta_dashboard["porcentagem"]) }}%
+                concluído
+            </strong>
+
+            <br><br>
+
+            <a
+                href="{{ url_for('metas') }}"
+                class="btn-meta"
+            >
+                Ver minhas metas
+            </a>
+
+        </div>
+
+    {% else %}
+
+        <div class="empty-state">
+
+            <h4>
+                Nenhuma meta criada
+            </h4>
+
+            <p>
+                Crie sua primeira meta financeira
+                para acompanhar seu progresso.
+            </p>
+
+            <a
+                href="{{ url_for('metas') }}"
+                class="btn-meta"
+            >
+                Criar primeira meta
+            </a>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+
 
 
         <!-- ÚLTIMAS MOVIMENTAÇÕES -->

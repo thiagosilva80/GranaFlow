@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>GranaFlow | Receitas</title>
+    <title>GranaFlow | Contas</title>
 
     <link
         rel="stylesheet"
@@ -27,9 +27,9 @@
 
             <nav>
                 <a href="{{ url_for('dashboard') }}">Dashboard</a>
-                <a href="{{ url_for('receitas') }}" class="active">Receitas</a>
+                <a href="{{ url_for('receitas') }}">Receitas</a>
                 <a href="{{ url_for('despesas') }}">Despesas</a>
-                <a href="{{ url_for('contas') }}">Contas</a>
+                <a href="{{ url_for('contas') }}" class="active">Contas</a>
                 <a href="{{ url_for('metas') }}">Metas</a>
                 <a href="{{ url_for('relatorios') }}">Relatórios</a>
             </nav>
@@ -37,14 +37,13 @@
 
     </aside>
 
-
     <main class="main-content">
 
         <header class="topbar">
 
             <div>
                 <p class="welcome">Controle financeiro</p>
-                <h1>Receitas</h1>
+                <h1>Contas a pagar</h1>
             </div>
 
         </header>
@@ -53,10 +52,12 @@
         <section class="panel">
 
             <div class="panel-header">
+
                 <div>
-                    <h3>Adicionar receita</h3>
-                    <p>Registre um dinheiro que entrou.</p>
+                    <h3>Adicionar conta</h3>
+                    <p>Cadastre uma conta que ainda precisa ser paga.</p>
                 </div>
+
             </div>
 
 
@@ -69,7 +70,7 @@
                         type="text"
                         id="descricao"
                         name="descricao"
-                        placeholder="Ex: Salário"
+                        placeholder="Ex: Internet"
                         required
                     >
                 </div>
@@ -99,30 +100,32 @@
                         required
                     >
                         <option value="">Selecione</option>
-                        <option value="Salário">Salário</option>
-                        <option value="Freelance">Freelance</option>
-                        <option value="Vendas">Vendas</option>
-                        <option value="Investimentos">Investimentos</option>
-                        <option value="Presente">Presente</option>
+                        <option value="Moradia">Moradia</option>
+                        <option value="Internet">Internet</option>
+                        <option value="Telefone">Telefone</option>
+                        <option value="Assinaturas">Assinaturas</option>
+                        <option value="Educação">Educação</option>
+                        <option value="Saúde">Saúde</option>
+                        <option value="Transporte">Transporte</option>
                         <option value="Outros">Outros</option>
                     </select>
                 </div>
 
 
                 <div>
-                    <label for="data">Data</label>
+                    <label for="vencimento">Vencimento</label>
 
                     <input
                         type="date"
-                        id="data"
-                        name="data"
+                        id="vencimento"
+                        name="vencimento"
                         required
                     >
                 </div>
 
 
                 <button type="submit">
-                    + Adicionar receita
+                    + Adicionar conta
                 </button>
 
             </form>
@@ -133,32 +136,59 @@
         <section class="panel transactions">
 
             <div class="panel-header">
+
                 <div>
-                    <h3>Minhas receitas</h3>
-                    <p>Receitas cadastradas por você.</p>
+                    <h3>Minhas contas</h3>
+                    <p>Contas cadastradas por você.</p>
                 </div>
+
             </div>
 
 
-            {% if receitas %}
+            {% if contas %}
 
-                {% for receita in receitas %}
+                {% for conta in contas %}
 
                     <div class="transaction">
 
                         <div>
-                            <strong>{{ receita["descricao"] }}</strong>
+
+                            <strong>
+                                {{ conta["descricao"] }}
+                            </strong>
 
                             <span>
-                                {{ receita["categoria"] }}
-                                •
-                                {{ receita["data"] }}
+                                {{ conta["categoria"] }}
+                                • vence em {{ conta["vencimento"] }}
                             </span>
+
                         </div>
 
-                        <strong class="positivo">
-                            + R$ {{ "%.2f"|format(receita["valor"]) }}
-                        </strong>
+
+                        <div class="conta-actions">
+
+                            <strong>
+                                R$ {{ "%.2f"|format(conta["valor"]) }}
+                            </strong>
+
+                            {% if conta["status"] == "pendente" %}
+
+                                <a
+                                    href="{{ url_for('pagar_conta', conta_id=conta['id']) }}"
+                                    class="btn-pagar"
+                                >
+                                    Marcar como paga
+                                </a>
+
+                            {% else %}
+
+                                <span class="status-pago">
+                                    Pago
+                                </span>
+
+                            {% endif %}
+
+                        </div>
 
                     </div>
 
@@ -167,8 +197,13 @@
             {% else %}
 
                 <div class="empty-state">
-                    <h4>Nenhuma receita cadastrada</h4>
-                    <p>Sua primeira receita aparecerá aqui.</p>
+
+                    <h4>Nenhuma conta cadastrada</h4>
+
+                    <p>
+                        Suas contas futuras aparecerão aqui.
+                    </p>
+
                 </div>
 
             {% endif %}
