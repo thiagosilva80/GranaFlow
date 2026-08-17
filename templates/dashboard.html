@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>GranaFlow | Dashboard</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/dashboard.css') }}"
+    >
+</head>
+
+<body>
+
+<div class="app">
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            <h2>GranaFlow</h2>
+            <span>Controle financeiro</span>
+        </div>
+
+        <nav>
+
+            <a href="{{ url_for('dashboard') }}" class="active">
+                Dashboard
+            </a>
+
+            <a href="{{ url_for('receitas') }}">
+                Receitas
+            </a>
+
+            <a href="{{ url_for('despesas') }}">
+                Despesas
+            </a>
+
+            <a href="#">
+                Contas
+            </a>
+
+            <a href="#">
+                Metas
+            </a>
+
+            <a href="#">
+                Relatórios
+            </a>
+
+        </nav>
+
+        <div class="sidebar-footer">
+
+            <a href="#">
+                Configurações
+            </a>
+
+            <a href="#">
+                Sair
+            </a>
+
+        </div>
+
+    </aside>
+
+
+    <main class="main-content">
+
+        <!-- TOPO -->
+
+        <header class="topbar">
+
+            <div>
+
+                <p class="welcome">
+                    Seja bem-vindo,
+                </p>
+
+                <h1>
+                    {{ nome }} 👋
+                </h1>
+
+            </div>
+
+            <div class="profile">
+
+                <div class="profile-avatar">
+                    {{ nome[0] }}
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- CARDS -->
+
+        <section class="cards">
+
+            <div class="card saldo">
+
+                <span>
+                    Saldo disponível
+                </span>
+
+                <h2>
+                    R$ {{ "%.2f"|format(saldo) }}
+                </h2>
+
+                <p>
+                    Disponível neste mês
+                </p>
+
+            </div>
+
+
+            <div class="card">
+
+                <span>
+                    Receitas
+                </span>
+
+                <h2 class="positivo">
+                    R$ {{ "%.2f"|format(total_receitas) }}
+                </h2>
+
+                <p>
+                    Total recebido
+                </p>
+
+            </div>
+
+
+            <div class="card">
+
+                <span>
+                    Despesas
+                </span>
+
+                <h2 class="negativo">
+                    R$ {{ "%.2f"|format(total_despesas) }}
+                </h2>
+
+                <p>
+                    Total gasto
+                </p>
+
+            </div>
+
+
+            <div class="card">
+
+                <span>
+                    Contas próximas
+                </span>
+
+                <h2>
+                    R$ 0,00
+                </h2>
+
+                <p>
+                    Nenhuma conta pendente
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- GASTOS + METAS -->
+
+        <section class="dashboard-grid">
+
+            <!-- GASTOS POR CATEGORIA -->
+
+            <div class="panel">
+
+                <div class="panel-header">
+
+                    <div>
+
+                        <h3>
+                            Gastos por categoria
+                        </h3>
+
+                        <p>
+                            Resumo das suas despesas
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                {% if categorias_dashboard %}
+
+                    <div class="category-list">
+
+                        {% for item in categorias_dashboard %}
+
+                            <div class="category">
+
+                                <div>
+
+                                    <strong>
+                                        {{ item["categoria"] }}
+                                    </strong>
+
+                                    <span>
+                                        R$ {{ "%.2f"|format(item["total"]) }}
+                                    </span>
+
+                                </div>
+
+
+                                <div class="progress">
+
+                                    <div
+                                        style="width: {{ item['porcentagem'] }}%;"
+                                    ></div>
+
+                                </div>
+
+
+                                <small>
+
+                                    {{ "%.0f"|format(item["porcentagem"]) }}%
+                                    dos seus gastos
+
+                                </small>
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                {% else %}
+
+                    <div class="empty-state">
+
+                        <h4>
+                            Nenhum gasto registrado
+                        </h4>
+
+                        <p>
+                            Seus gastos por categoria aparecerão aqui
+                            quando você adicionar uma despesa.
+                        </p>
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- METAS -->
+
+            <div class="panel">
+
+                <div class="panel-header">
+
+                    <div>
+
+                        <h3>
+                            Metas financeiras
+                        </h3>
+
+                        <p>
+                            Seus objetivos
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="empty-state">
+
+                    <h4>
+                        Nenhuma meta criada
+                    </h4>
+
+                    <p>
+                        Crie sua primeira meta financeira
+                        para acompanhar seu progresso.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ÚLTIMAS MOVIMENTAÇÕES -->
+
+        <section class="panel transactions">
+
+            <div class="panel-header">
+
+                <div>
+
+                    <h3>
+                        Últimas movimentações
+                    </h3>
+
+                    <p>
+                        Suas movimentações recentes
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            {% if movimentacoes %}
+
+                {% for movimento in movimentacoes %}
+
+                    <div class="transaction">
+
+                        <div>
+
+                            <strong>
+                                {{ movimento["descricao"] }}
+                            </strong>
+
+                            <span>
+
+                                {{ movimento["categoria"] }}
+                                •
+                                {{ movimento["data"] }}
+
+                            </span>
+
+                        </div>
+
+
+                        {% if movimento["tipo"] == "receita" %}
+
+                            <strong class="positivo">
+
+                                + R$ {{ "%.2f"|format(movimento["valor"]) }}
+
+                            </strong>
+
+                        {% else %}
+
+                            <strong class="negativo">
+
+                                - R$ {{ "%.2f"|format(movimento["valor"]) }}
+
+                            </strong>
+
+                        {% endif %}
+
+                    </div>
+
+                {% endfor %}
+
+            {% else %}
+
+                <div class="empty-state">
+
+                    <h4>
+                        Nenhuma movimentação ainda
+                    </h4>
+
+                    <p>
+                        Quando você adicionar uma receita ou despesa,
+                        ela aparecerá aqui.
+                    </p>
+
+                </div>
+
+            {% endif %}
+
+        </section>
+
+    </main>
+
+</div>
+
+</body>
+
+</html>

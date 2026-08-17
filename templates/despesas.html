@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>GranaFlow | Despesas</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/dashboard.css') }}"
+    >
+</head>
+
+<body>
+
+<div class="app">
+
+    <aside class="sidebar">
+
+        <div>
+
+            <div class="logo">
+                <h2>GranaFlow</h2>
+                <span>Controle financeiro</span>
+            </div>
+
+            <nav>
+
+                <a href="{{ url_for('dashboard') }}">
+                    Dashboard
+                </a>
+
+                <a href="{{ url_for('receitas') }}">
+                    Receitas
+                </a>
+
+                <a
+                    href="{{ url_for('despesas') }}"
+                    class="active"
+                >
+                    Despesas
+                </a>
+
+                <a href="#">
+                    Contas
+                </a>
+
+                <a href="#">
+                    Metas
+                </a>
+
+                <a href="#">
+                    Relatórios
+                </a>
+
+            </nav>
+
+        </div>
+
+    </aside>
+
+
+    <main class="main-content">
+
+        <header class="topbar">
+
+            <div>
+                <p class="welcome">
+                    Controle financeiro
+                </p>
+
+                <h1>
+                    Despesas
+                </h1>
+            </div>
+
+        </header>
+
+
+        <!-- ADICIONAR DESPESA -->
+
+        <section class="panel">
+
+            <div class="panel-header">
+
+                <div>
+                    <h3>Adicionar despesa</h3>
+
+                    <p>
+                        Registre um dinheiro que saiu.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <form method="POST" class="finance-form">
+
+                <div>
+
+                    <label for="descricao">
+                        Descrição
+                    </label>
+
+                    <input
+                        type="text"
+                        id="descricao"
+                        name="descricao"
+                        placeholder="Ex: Mercado"
+                        required
+                    >
+
+                </div>
+
+
+                <div>
+
+                    <label for="valor">
+                        Valor
+                    </label>
+
+                    <input
+                        type="number"
+                        id="valor"
+                        name="valor"
+                        step="0.01"
+                        min="0.01"
+                        placeholder="0,00"
+                        required
+                    >
+
+                </div>
+
+
+                <div>
+
+                    <label for="categoria">
+                        Categoria
+                    </label>
+
+                    <select
+                        id="categoria"
+                        name="categoria"
+                        required
+                    >
+
+                        <option value="">
+                            Selecione
+                        </option>
+
+                        <option value="Alimentação">
+                            Alimentação
+                        </option>
+
+                        <option value="Transporte">
+                            Transporte
+                        </option>
+
+                        <option value="Moradia">
+                            Moradia
+                        </option>
+
+                        <option value="Lazer">
+                            Lazer
+                        </option>
+
+                        <option value="Saúde">
+                            Saúde
+                        </option>
+
+                        <option value="Educação">
+                            Educação
+                        </option>
+
+                        <option value="Assinaturas">
+                            Assinaturas
+                        </option>
+
+                        <option value="Compras">
+                            Compras
+                        </option>
+
+                        <option value="Outros">
+                            Outros
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div>
+
+                    <label for="data">
+                        Data
+                    </label>
+
+                    <input
+                        type="date"
+                        id="data"
+                        name="data"
+                        required
+                    >
+
+                </div>
+
+
+                <button type="submit">
+                    + Adicionar despesa
+                </button>
+
+            </form>
+
+        </section>
+
+
+        <!-- MINHAS DESPESAS -->
+
+        <section class="panel transactions">
+
+            <div class="panel-header">
+
+                <div>
+                    <h3>Minhas despesas</h3>
+
+                    <p>
+                        Despesas cadastradas por você.
+                    </p>
+                </div>
+
+            </div>
+
+
+            {% if despesas %}
+
+                {% for despesa in despesas %}
+
+                    <div class="transaction">
+
+                        <div>
+
+                            <strong>
+                                {{ despesa["descricao"] }}
+                            </strong>
+
+                            <span>
+                                {{ despesa["categoria"] }}
+                                •
+                                {{ despesa["data"] }}
+                            </span>
+
+                        </div>
+
+
+                        <strong class="negativo">
+                            - R$ {{ "%.2f"|format(despesa["valor"]) }}
+                        </strong>
+
+                    </div>
+
+                {% endfor %}
+
+            {% else %}
+
+                <div class="empty-state">
+
+                    <h4>
+                        Nenhuma despesa cadastrada
+                    </h4>
+
+                    <p>
+                        Quando você adicionar uma despesa,
+                        ela aparecerá aqui.
+                    </p>
+
+                </div>
+
+            {% endif %}
+
+        </section>
+
+    </main>
+
+</div>
+
+</body>
+</html>
