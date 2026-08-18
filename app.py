@@ -270,23 +270,22 @@ def dashboard():
     meta_dashboard = None
 
     if meta_principal:
-
         if meta_principal["valor_meta"] > 0:
             porcentagem_meta = (
-            meta_principal["valor_atual"] /
-            meta_principal["valor_meta"]
-        ) * 100
-    else:
-        porcentagem_meta = 0
+                meta_principal["valor_atual"] /
+                meta_principal["valor_meta"]
+            ) * 100
+        else:
+            porcentagem_meta = 0
 
-    porcentagem_meta = min(porcentagem_meta, 100)
+        porcentagem_meta = min(porcentagem_meta, 100)
 
-    meta_dashboard = {
-        "nome": meta_principal["nome"],
-        "valor_meta": meta_principal["valor_meta"],
-        "valor_atual": meta_principal["valor_atual"],
-        "porcentagem": porcentagem_meta
-    }
+        meta_dashboard = {
+            "nome": meta_principal["nome"],
+            "valor_meta": meta_principal["valor_meta"],
+            "valor_atual": meta_principal["valor_atual"],
+            "porcentagem": porcentagem_meta
+        }
     
 
 
